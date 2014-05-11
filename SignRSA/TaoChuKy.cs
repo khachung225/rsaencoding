@@ -11,52 +11,61 @@ using System.Windows.Forms;
 
 namespace SignRSA
 {
-    public partial class FrmBenB : Form
+    public partial class TaoChuKy : Form
     {
         private RSAAlgorithm _rsaAlgorithm = new RSAAlgorithm();
-        public FrmBenB()
+
+        public TaoChuKy()
         {
             InitializeComponent();
+            var frmb = new KiemTraChuKy();
+            frmb.Show();
         }
-
-        private void btnnhannoidung_Click(object sender, EventArgs e)
+        private void btnmahoa_Click(object sender, EventArgs e)
         {
-            try
-            {
-                txtChuKy.Text = AppGlobal.ChuKy;
-                txtNoiDung.Text = AppGlobal.NoiDung;
-            }
-            catch (Exception)
-            {
-                
-               
-            }
+
+            if (!IsHaKey())
+                MessageBox.Show("Bạn phải tạo khóa trước ", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
+                try
+                {
+                    string mahoanoidung;
+                    string txtMaBanMa;
+                    string txtBanma;
+                   
+                    _rsaAlgorithm.MaHoa(txtnoidung.Text, AppGlobal.E, AppGlobal.N, out mahoanoidung, out txtMaBanMa, out txtBanma);
+
+                    txtRoSo.Text = mahoanoidung;
+                    txtMaHoa.Text = txtMaBanMa;
+                    txtchuky.Text = txtBanma;
+
+                    AppGlobal.NoiDung = mahoanoidung;
+                    AppGlobal.ChuKy = txtBanma;
+                     
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+
+            AppGlobal.NoiDungnguyon = txtnoidung.Text;
+             
         }
 
-        private void btnGiaiMa_Click(object sender, EventArgs e)
+        private bool IsHaKey()
         {
-            try
-            {
-                txtnoidunggoc.Text = _rsaAlgorithm.GiaiMaBase64NoiDung(txtNoiDung.Text);
-               
-                txtchukygoc.Text = _rsaAlgorithm.GiaiMaBase64ChuKy(txtChuKy.Text); ;
-                //lblKetQua.Text = magia;
-            }
-            catch (Exception)
-            {
-                
-            }
+            if (AppGlobal.D <= 0)
+                return false;
+                    if (AppGlobal.E <= 0)
+                return false;
+            if (AppGlobal.N <= 0)
+                return false;
+
+            return true;
         }
-
-        private void btnkiemtra_Click(object sender, EventArgs e)
-        {
-          var isOK=  _rsaAlgorithm.Kiemtra(txtnoidunggoc.Text, txtChuKy.Text, AppGlobal.N, AppGlobal.D);
-            lblKetQua.Text = isOK ? "Xác nhận" : "Không xác nhận";
-        }
-
-
-
-
+        
+        
         #region check bok
 
         private void reset()
@@ -209,11 +218,10 @@ namespace SignRSA
 
             }
         }
-        
+
         private void btntaokhoamoi_Click_1(object sender, EventArgs e)
         {
             reset();
         }
-
     }
 }

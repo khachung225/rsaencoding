@@ -16,7 +16,7 @@ namespace SignRSA
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmBenA());
+            Application.Run(new TaoChuKy());
         }
     }
 }
